@@ -101,6 +101,19 @@ public class SwiftMediasPickerPlugin: NSObject, FlutterPlugin, GalleryController
 
             self.result!(resultUrls)
 
+        } else if ("deleteAllTempFiles" == call.method) {
+            let fileManager = FileManager.default
+            let tempFolderPath = NSTemporaryDirectory()
+            do {
+                let filePaths = try fileManager.contentsOfDirectory(atPath: tempFolderPath)
+                for filePath in filePaths {
+                    try fileManager.removeItem(atPath: NSTemporaryDirectory() + filePath)
+                }
+            } catch let error as NSError {
+                print("Could not clear temp folder: \(error.debugDescription)")
+            }
+            self.result = result
+            self.result!(true)
         } else {
             result(FlutterMethodNotImplemented)
         }
@@ -343,6 +356,7 @@ public class SwiftMediasPickerPlugin: NSObject, FlutterPlugin, GalleryController
     }
 
     public func galleryControllerDidCancel(_ controller: GalleryController) {
+        self.result!([])
         controller.dismiss(animated: true, completion: nil)
     }
 }
