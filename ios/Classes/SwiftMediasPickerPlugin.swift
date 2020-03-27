@@ -106,8 +106,10 @@ public class SwiftMediasPickerPlugin: NSObject, FlutterPlugin, GalleryController
             let tempFolderPath = NSTemporaryDirectory()
             do {
                 let filePaths = try fileManager.contentsOfDirectory(atPath: tempFolderPath)
-                for filePath in filePaths {
-                    try fileManager.removeItem(atPath: NSTemporaryDirectory() + filePath)
+                for filename in filePaths {
+                    if filename.contains("image_picker_") {
+                        try fileManager.removeItem(atPath: NSTemporaryDirectory() + filename)
+                    }
                 }
             } catch let error as NSError {
                 print("Could not clear temp folder: \(error.debugDescription)")
