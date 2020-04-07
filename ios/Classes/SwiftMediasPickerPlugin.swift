@@ -35,19 +35,19 @@ public class SwiftMediasPickerPlugin: NSObject, FlutterPlugin, GalleryController
         }
         if ("pickImages" == call.method) {
 
-            guard let args = call.arguments as? [String: Int] else {
+            guard let args = call.arguments as? [String: Any] else {
                 fatalError("args are formatted badly")
             }
-            let quantity = args["quantity"]
-            let withVideo = args["withVideo"]
-            maxWidth = args["maxWidth"]
-            maxHeight = args["maxHeight"]
-            quality = args["quality"]
+            let quantity = args["quantity"] as? Int
+            let withVideo = args["withVideo"] as? Bool ?? true
+            maxWidth = args["maxWidth"] as? Int
+            maxHeight = args["maxHeight"] as? Int
+            quality = args["quality"] as? Int
 
             if (quantity != nil) {
                 Config.Camera.imageLimit = quantity!
             }
-            if (withVideo != nil && withVideo != nil) {
+            if (withVideo) {
                 Config.tabsToShow = [.imageTab, .cameraTab, .videoTab]
             } else {
                 Config.tabsToShow = [.imageTab, .cameraTab]
