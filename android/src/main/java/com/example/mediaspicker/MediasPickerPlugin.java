@@ -316,7 +316,7 @@ public class MediasPickerPlugin implements MethodCallHandler, ActivityResultList
 
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == FilePickerConst.REQUEST_CODE_PHOTO) {
+		if (result !=null  && requestCode == FilePickerConst.REQUEST_CODE_PHOTO) {
 			List<String> docPaths = new ArrayList<>();
 			if (intent != null) {
 				docPaths = intent.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
