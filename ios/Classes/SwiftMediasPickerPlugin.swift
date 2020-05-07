@@ -153,23 +153,33 @@ public class SwiftMediasPickerPlugin: NSObject, FlutterPlugin, GalleryController
                 }
 
                 // Request Image
-                manager.requestImageData(for: image.asset, options: requestOptions, resultHandler: { (data, _, _, _) in
+                manager.requestImageData(for: image.asset, options: requestOptions, resultHandler: { (data, dataUTI, orientation, info) in
                     if data != nil {
-                        var img = UIImage(data: data!)
-                        img = self.ResizeImage(image: img!, targetSize: CGSize(width: Double(self.maxWidth!), height: Double(self.maxHeight!)))
-                        let nData = img!.jpegData(compressionQuality: (CGFloat(self.quality!) / CGFloat(100)))
                         let guid = NSUUID().uuidString
-                        let tmpFile = String(format: "image_picker_%@.jpg", guid)
                         let tmpDirec = NSTemporaryDirectory()
-                        let tmpPath = (tmpDirec as NSString).appendingPathComponent(tmpFile)
-
-                        if fileManager.createFile(atPath: tmpPath, contents: nData, attributes: nil) {
-                            print(tmpPath)
-                            resultUrls.add(tmpPath)
+                        
+                        if (dataUTI == "com.compuserve.gif") {
+                            let tmpFile = String(format: "image_picker_%@.gif", guid)
+                            let tmpPath = (tmpDirec as NSString).appendingPathComponent(tmpFile)
+                            if fileManager.createFile(atPath: tmpPath, contents: data, attributes: nil) {
+                                print(tmpPath)
+                                resultUrls.add(tmpPath)
+                            } else {
+                                print("Erro")
+                            }
                         } else {
-                            print("Erro")
+                            var img = UIImage(data: data!)
+                            let tmpFile = String(format: "image_picker_%@.jpg", guid)
+                            let tmpPath = (tmpDirec as NSString).appendingPathComponent(tmpFile)
+                            img = self.ResizeImage(image: img!, targetSize: CGSize(width: Double(self.maxWidth!), height: Double(self.maxHeight!)))
+                            let nData = img!.jpegData(compressionQuality: (CGFloat(self.quality!) / CGFloat(100)))
+                            if fileManager.createFile(atPath: tmpPath, contents: nData, attributes: nil) {
+                                print(tmpPath)
+                                resultUrls.add(tmpPath)
+                            } else {
+                                print("Erro")
+                            }
                         }
-
                     }
                 })
             }
